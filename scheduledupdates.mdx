@@ -1,0 +1,48 @@
+---
+title: Scheduled updates
+uid: scheduled-updates
+description: Learn about distributing offline map updates to large mobile workforces.
+images: 
+  - "../images/map-2d.png"
+---
+
+import PreplannedLimitation from "../content/_preplanned-u10-limitation"
+
+Preplanned <Term term="offline map">offline maps</Term> support an additional synchronization workflow known as scheduled updates. Scheduled updates optimizes updating the data contents of an <Term term="offline map">offline map</Term> to the current contents of the source <Term term="web map">web map</Term>.
+
+<PreplannedLimitation fullNote />
+
+## How scheduled updates work
+Preplanned offline maps are generated on a schedule (typically every day, or every week). When a web map has scheduled updates enabled, each time a preplanned offline map is upated, an update file of data changes (adds, updates, and deletes) will also be created and stored.
+
+You opt in to scheduled updates when you download a preplanned <Term term="offline map">offline map</Term>. When you subsequently synchronize to update the offline map with the latest edits in the <Term term="web map">web map</Term>, a sequence of update files will be downloaded and applied in order. This updates the contents of your downloaded offline map to the current state of the web map.
+
+<Note>
+
+If you are not using scheduled updates, then each time a preplanned <Term term="offline map">offline map</Term> is synchronized, the precise differences between the current state of the preplanned offline map's data content and the <Term term="web map">web map's</Term> data content must be calculated. This calculation can take time and involves uploading information about current offline edits. For use cases where the <Term term="offline map">offline map</Term> is read-only, preplanned offline maps and scheduled updates bypass this upload and calculation overhead to provide an efficient and scalable way to keep offline maps up to date.
+
+</Note>
+
+The number and size of update files that are downloaded depends on when the offline map was downloaded or last synchronized, the frequency of the preplanned packaging schedule, and whether any data updates have occurred. If the size of the combined update files required to make the offline map current is greater than the latest preplanned offline map available for download, then that latest preplanned offline map is downloaded instead and replaces the offline map already on your device.
+
+<Note>
+  
+  Update files are only maintained for 7 days. If the last sync was more than 7 days ago, there may not be enough update files to download and apply to the offline map to bring it up to date. In that case, the latest preplanned offline map is downloaded to replace the offline map already on your device.
+
+</Note>
+
+Scheduled updates is a read-only workflow, but can greatly speed up synchronizing preplanned offline maps that cover large areas, are frequently updated, or support large numbers of mobile workers.
+
+<Box>
+
+#### Steps to download a preplanned map with scheduled updates
+
+1. Create an <PseudoCode>Offline Map Task</PseudoCode> referencing the <Term term="web map">web map</Term>. 
+1. Use the <PseudoCode>Offline Map Task</PseudoCode> to list any available preplanned <Term term="offline map">offline maps</Term>.
+1. Get a set of default <PseudoCode>Download Preplanned Offline Map Parameters</PseudoCode>. These parameters describe how the owner of the web map configured the offline map to be downloaded by default. Modify the parameters to opt in to scheduled updates if available by setting <PseudoCode>Update Mode</PseudoCode> to <PseudoCode>Download Scheduled Updates</PseudoCode>.
+1. Use the parameters to create a <PseudoCode>Download Preplanned Offline Map Job</PseudoCode> to download the <Term term="offline map">offline map</Term>, specifying the download location.
+1. Start the job and wait for it to complete, returning a <PseudoCode>Map</PseudoCode>, which is ready for use. When this map is later synchronized using an <PseudoCode>Offline Map Sync Job</PseudoCode>, scheduled updates will be used.
+
+</Box>
+
+<TopicPagination />
